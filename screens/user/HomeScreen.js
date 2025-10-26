@@ -6,6 +6,8 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../config/firebase';
 import { commonStyles } from '../../styles/commonStyles';
 
 const HomeScreen = ({ navigation, route }) => {
@@ -23,7 +25,15 @@ const HomeScreen = ({ navigation, route }) => {
         {
           text: 'Logout',
           style: 'destructive',
-          onPress: () => navigation.navigate('Login'),
+          onPress: async () => {
+            try {
+              await signOut(auth);
+              navigation.navigate('Login');
+            } catch (error) {
+              console.error('Logout error:', error);
+              Alert.alert('Error', 'Failed to logout. Please try again.');
+            }
+          },
         },
       ]
     );

@@ -9,6 +9,9 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, firestore } from '../../config/firebase';
 import { commonStyles } from '../../styles/commonStyles';
 
 const AdminLoginScreen = ({ navigation }) => {
@@ -24,10 +27,14 @@ const AdminLoginScreen = ({ navigation }) => {
 
     if (!formData.adminId.trim()) {
       newErrors.adminId = 'Admin ID is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.adminId)) {
+      newErrors.adminId = 'Please enter a valid email address';
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
     }
 
     setErrors(newErrors);
@@ -47,22 +54,63 @@ const AdminLoginScreen = ({ navigation }) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // For admin login, we'll treat adminId as email
+      // Sign in with Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, formData.adminId, formData.password);
       
-      // Simulate successful admin login
-      Alert.alert(
-        'Admin Access Granted',
-        'Welcome to the admin dashboard.',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Home', { isAdmin: true }),
-          },
-        ]
-      );
+      // Check if user has admin privileges in Firestore
+      const userDoc = await getDoc(doc(firestore, 'users', userCredential.user.uid));
+      
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        const isAdmin = userData.isAdmin === true;
+        
+        if (isAdmin) {
+          // Successful admin login
+          Alert.alert(
+            'Admin Access Granted',
+            'Welcome to the admin dashboard.',
+            [
+              {
+                text: 'OK',
+                onPress: () => navigation.navigate('Home', { isAdmin: true }),
+              },
+            ]
+          );
+        } else {
+          // Sign out since user is not an admin
+          await auth.signOut();
+          Alert.alert(
+            'Access Denied',
+            'This account does not have admin privileges. Please contact your administrator to grant admin access.',
+            [{ text: 'OK' }]
+          );
+        }
+      } else {
+        // Sign out since user is not in database
+        await auth.signOut();
+        console.log('User UID:', userCredential.user.uid);
+        console.log('Email:', userCredential.user.email);
+        Alert.alert(
+          'Account Not Found',
+          `Your account exists in the system but your user profile is not configured.\n\nUser ID: ${userCredential.user.uid}\n\nPlease contact your administrator to set up your admin account in the database.`,
+          [{ text: 'OK' }]
+        );
+      }
     } catch (error) {
-      Alert.alert('Error', 'Invalid admin credentials. Please try again.');
+      console.error('Admin login error:', error);
+      let errorMessage = 'Invalid admin credentials. Please try again.';
+      
+      // Firebase error handling
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+        errorMessage = 'Invalid credentials. Please try again.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid admin ID (email).';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -88,15 +136,16 @@ const AdminLoginScreen = ({ navigation }) => {
           </Text>
 
           <View style={commonStyles.inputContainer}>
-            <Text style={commonStyles.label}>Admin ID</Text>
+            <Text style={commonStyles.label}>Admin Email</Text>
             <TextInput
               style={[
                 commonStyles.input,
                 errors.adminId && commonStyles.inputError,
               ]}
-              placeholder="Enter your admin ID"
+              placeholder="Enter your admin email"
               value={formData.adminId}
               onChangeText={(value) => handleInputChange('adminId', value)}
+              keyboardType="email-address"
               autoCapitalize="none"
               autoCorrect={false}
             />

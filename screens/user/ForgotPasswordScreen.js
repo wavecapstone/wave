@@ -9,6 +9,8 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../../config/firebase';
 import { commonStyles } from '../../styles/commonStyles';
 
 const ForgotPasswordScreen = ({ navigation }) => {
@@ -35,8 +37,8 @@ const ForgotPasswordScreen = ({ navigation }) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Firebase password reset
+      await sendPasswordResetEmail(auth, email);
       
       setEmailSent(true);
       Alert.alert(
@@ -50,7 +52,19 @@ const ForgotPasswordScreen = ({ navigation }) => {
         ]
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to send reset email. Please try again.');
+      console.error('Password reset error:', error);
+      let errorMessage = 'Failed to send reset email. Please try again.';
+      
+      // Firebase error handling
+      if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email address.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsLoading(false);
     }

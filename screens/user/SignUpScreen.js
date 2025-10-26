@@ -9,6 +9,9 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, firestore } from '../../config/firebase';
 import { commonStyles } from '../../styles/commonStyles';
 
 const SignUpScreen = ({ navigation }) => {
@@ -56,8 +59,21 @@ const SignUpScreen = ({ navigation }) => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Firebase Authentication - Create user
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      
+      // Update user profile with full name
+      await updateProfile(userCredential.user, {
+        displayName: formData.fullName
+      });
+      
+      // Create user document in Firestore
+      await setDoc(doc(firestore, 'users', userCredential.user.uid), {
+        email: formData.email,
+        fullName: formData.fullName,
+        createdAt: new Date().toISOString(),
+        isAdmin: false // Regular users are not admins by default
+      });
       
       Alert.alert(
         'Success',
@@ -70,7 +86,21 @@ const SignUpScreen = ({ navigation }) => {
         ]
       );
     } catch (error) {
-      Alert.alert('Error', 'Failed to create account. Please try again.');
+      console.error('Sign up error:', error);
+      let errorMessage = 'Failed to create account. Please try again.';
+      
+      // Firebase error handling
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = 'This email is already registered. Please sign in instead.';
+      } else if (error.code === 'auth/invalid-email') {
+        errorMessage = 'Please enter a valid email address.';
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = 'Password is too weak. Please use a stronger password.';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network error. Please check your connection and try again.';
+      }
+      
+      Alert.alert('Error', errorMessage);
     } finally {
       setIsLoading(false);
     }
