@@ -6,7 +6,6 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import { globalStyles } from '../../styles/globalStyles';
 import { commonStyles } from '../../styles/commonStyles';
 
 const HomeScreen = ({ navigation, route }) => {

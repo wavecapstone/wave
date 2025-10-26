@@ -9,7 +9,6 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
-import { globalStyles } from '../../styles/globalStyles';
 import { commonStyles } from '../../styles/commonStyles';
 
 const ForgotPasswordScreen = ({ navigation }) => {
