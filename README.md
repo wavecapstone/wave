@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-# wave
-Wave Capstone
-=======
 # Wave Mobile App
 
 A React Native mobile application with authentication pages and global styling.
@@ -120,4 +116,3 @@ Login Screen (Initial)
 - Responsive design for different screen sizes
 - Clean, modern UI with consistent styling
 - No local stylesheets - all styles are global
->>>>>>> f4597f1 (Initial commit)
