@@ -23,7 +23,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
     if (!email.trim()) {
       setError('Email is required');
       return false;
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError('Please enter a valid email address');
       return false;
     }

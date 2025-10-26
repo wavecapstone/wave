@@ -12,7 +12,6 @@ import {
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { auth, firestore } from '../../config/firebase';
-import { globalStyles } from '../../styles/globalStyles';
 import { commonStyles } from '../../styles/commonStyles';
 
 const LoginScreen = ({ navigation }) => {
@@ -210,7 +209,7 @@ const LoginScreen = ({ navigation }) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[commonStyles.button, commonStyles.buttonSecondary, globalStyles.marginTop]}
+            style={[commonStyles.button, commonStyles.buttonSecondary]}
             onPress={() => navigation.navigate('AdminLogin')}
           >
             <Text style={[commonStyles.buttonText, commonStyles.buttonSecondaryText]}>

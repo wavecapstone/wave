@@ -160,6 +160,15 @@ export const commonStyles = StyleSheet.create({
     textAlign: 'center',
   },
 
+  instructionText: {
+    fontSize: 16,
+    color: '#7f8c8d',
+    textAlign: 'center',
+    fontStyle: 'italic',
+    marginTop: 20,
+    paddingHorizontal: 20,
+  },
+
   homeButton: {
     backgroundColor: '#ffffff',
     borderRadius: 12,
@@ -207,6 +216,81 @@ export const commonStyles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 12,
     fontWeight: '600',
+  },
+
+  // Hamburger Menu styles
+  hamburgerIcon: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    width: 24,
+    height: 20,
+    justifyContent: 'space-between',
+    zIndex: 1000,
+  },
+
+  hamburgerLine: {
+    width: 20,
+    height: 2,
+    backgroundColor: '#2c3e50',
+    borderRadius: 1,
+  },
+
+  menuOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+  },
+
+  menuContainer: {
+    backgroundColor: '#ffffff',
+    width: '80%',
+    height: '100%',
+    paddingTop: 20,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 4,
+      height: 0,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+
+  menuHeader: {
+    paddingHorizontal: 0,
+    paddingVertical: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#e1e8ed',
+    marginBottom: 16,
+  },
+
+  menuTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+    textAlign: 'center',
+  },
+
+  menuOption: {
+    paddingHorizontal: 0,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f8f9fa',
+    marginBottom: 4,
+  },
+
+  menuOptionText: {
+    fontSize: 18,
+    color: '#2c3e50',
+    fontWeight: '500',
   },
 });
 

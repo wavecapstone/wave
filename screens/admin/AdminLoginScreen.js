@@ -182,7 +182,7 @@ const AdminLoginScreen = ({ navigation }) => {
             disabled={isLoading}
           >
             <Text style={commonStyles.buttonText}>
-              {isLoading ? 'Signing In...' : 'Admin Sign In'}
+              {isLoading ? 'Signing In...' : 'Sign In'}
             </Text>
           </TouchableOpacity>
 
