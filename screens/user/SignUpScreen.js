@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,20 @@ const SignUpScreen = ({ navigation }) => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear form data when screen is focused (e.g., after logout)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setFormData({
+        fullName: '',
+        email: '',
+        password: '',
+      });
+      setErrors({});
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -126,7 +140,7 @@ const SignUpScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
-        contentContainerStyle={commonStyles.centeredContainer}
+        contentContainerStyle={commonStyles.topAlignedContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={commonStyles.formContainer}>

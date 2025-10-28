@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
@@ -21,6 +22,19 @@ const LoginScreen = ({ navigation }) => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear form data when screen is focused (e.g., after logout)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setFormData({
+        email: '',
+        password: '',
+      });
+      setErrors({});
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -131,11 +145,25 @@ const LoginScreen = ({ navigation }) => {
       style={commonStyles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <TouchableOpacity
+        style={commonStyles.userIconButton}
+        onPress={() => navigation.navigate('AdminLogin')}
+      >
+        <Text style={commonStyles.userIconText}>👤</Text>
+      </TouchableOpacity>
+      
       <ScrollView
-        contentContainerStyle={commonStyles.centeredContainer}
+        contentContainerStyle={commonStyles.topAlignedContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={commonStyles.formContainer}>
+          <View style={commonStyles.logoContainer}>
+            <Image 
+              source={require('../../assets/logo.png')} 
+              style={commonStyles.logo}
+              resizeMode="contain"
+            />
+          </View>
           <Text style={commonStyles.header}>Welcome Back</Text>
           <Text style={commonStyles.subHeader}>
             Sign in to your account to continue
@@ -177,14 +205,13 @@ const LoginScreen = ({ navigation }) => {
             {errors.password && (
               <Text style={commonStyles.errorText}>{errors.password}</Text>
             )}
+            <TouchableOpacity
+              style={commonStyles.forgotPasswordLink}
+              onPress={() => navigation.navigate('ForgotPassword')}
+            >
+              <Text style={commonStyles.forgotPasswordText}>Forgot Password?</Text>
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity
-            style={commonStyles.link}
-            onPress={() => navigation.navigate('ForgotPassword')}
-          >
-            <Text style={commonStyles.link}>Forgot Password?</Text>
-          </TouchableOpacity>
 
           <TouchableOpacity
             style={[
@@ -208,14 +235,6 @@ const LoginScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[commonStyles.button, commonStyles.buttonSecondary]}
-            onPress={() => navigation.navigate('AdminLogin')}
-          >
-            <Text style={[commonStyles.buttonText, commonStyles.buttonSecondaryText]}>
-              Admin Login
-            </Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

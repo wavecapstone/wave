@@ -6,10 +6,11 @@ import {
   Modal,
   Animated,
   ScrollView,
+  Image,
 } from 'react-native';
 import { commonStyles } from '../styles/commonStyles';
 
-const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress }) => {
+const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress, navigation }) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0));
 
@@ -44,6 +45,10 @@ const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress }) => {
     hideMenu();
     if (option === 'logout') {
       onLogout();
+    } else if (option === 'Create Lesson' && navigation) {
+      navigation.navigate('CreateLesson', { isAdmin: true });
+    } else if (option === 'Read Lesson' && navigation) {
+      navigation.navigate('ReadLesson', { isAdmin: true });
     } else {
       onFeaturePress(option);
     }
@@ -52,11 +57,6 @@ const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress }) => {
   const getMenuOptions = () => {
     if (isAdmin) {
       return [
-        { key: 'user-management', label: '👥 User Management', value: 'User Management' },
-        { key: 'analytics', label: '📊 Analytics Dashboard', value: 'Analytics Dashboard' },
-        { key: 'settings', label: '⚙️ System Settings', value: 'System Settings' },
-        { key: 'reports', label: '📋 Reports', value: 'Reports' },
-        { key: 'security', label: '🔒 Security Logs', value: 'Security Logs' },
         { key: 'logout', label: '🚪 Logout', value: 'logout' },
       ];
     } else {
@@ -79,9 +79,10 @@ const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress }) => {
         onPress={handleMenuPress}
         activeOpacity={0.7}
       >
-        <View style={commonStyles.hamburgerLine} />
-        <View style={commonStyles.hamburgerLine} />
-        <View style={commonStyles.hamburgerLine} />
+        <Image 
+          source={require('../assets/hamburger-icon.png')} 
+          style={commonStyles.hamburgerImage}
+        />
       </TouchableOpacity>
 
       {/* Menu Modal */}
@@ -105,7 +106,7 @@ const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress }) => {
                   {
                     translateX: fadeAnim.interpolate({
                       inputRange: [0, 1],
-                      outputRange: [-300, 0],
+                      outputRange: [300, 0],
                     }),
                   },
                 ],
@@ -113,7 +114,7 @@ const HamburgerMenu = ({ isAdmin, onLogout, onFeaturePress }) => {
             ]}
           >
             <View style={commonStyles.menuHeader}>
-              <Text style={commonStyles.menuTitle}>
+              <Text style={[commonStyles.menuTitle, { textAlign: 'left' }] }>
                 {isAdmin ? 'Admin Menu' : 'User Menu'}
               </Text>
             </View>

@@ -96,7 +96,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
-        contentContainerStyle={commonStyles.centeredContainer}
+        contentContainerStyle={commonStyles.topAlignedContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={commonStyles.formContainer}>

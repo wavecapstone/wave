@@ -11,6 +11,18 @@ import HomeScreen from './screens/user/HomeScreen';
 
 // Import Admin screens
 import AdminLoginScreen from './screens/admin/AdminLoginScreen';
+import DashboardCRUDScreen from './screens/admin/DashboardLessonsScreen';
+import CreateLessonScreen from './screens/admin/CreateLessonScreen';
+
+// Import Category screens
+import ListeningScreen from './screens/categories/listening/ListeningScreen';
+import SpeakingScreen from './screens/categories/speaking/SpeakingScreen';
+import ReadingScreen from './screens/categories/reading/ReadingScreen';
+import WritingScreen from './screens/categories/writing/WritingScreen';
+import ReadLessonScreen from './screens/admin/ReadLessonScreen';
+import LessonViewScreen from './screens/admin/LessonViewScreen';
+import UpdateLessonScreen from './screens/admin/UpdateLessonScreen';
+import DeleteLessonScreen from './screens/admin/DeleteLessonScreen';
 
 const Stack = createStackNavigator();
 
@@ -44,6 +56,16 @@ export default function App() {
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="AdminLogin" component={AdminLoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="DashboardLessons" component={DashboardCRUDScreen} />
+        <Stack.Screen name="CreateLesson" component={CreateLessonScreen} />
+        <Stack.Screen name="Listening" component={ListeningScreen} />
+        <Stack.Screen name="Speaking" component={SpeakingScreen} />
+        <Stack.Screen name="Reading" component={ReadingScreen} />
+        <Stack.Screen name="Writing" component={WritingScreen} />
+        <Stack.Screen name="ReadLesson" component={ReadLessonScreen} />
+        <Stack.Screen name="LessonView" component={LessonViewScreen} />
+        <Stack.Screen name="UpdateLesson" component={UpdateLessonScreen} />
+        <Stack.Screen name="DeleteLesson" component={DeleteLessonScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

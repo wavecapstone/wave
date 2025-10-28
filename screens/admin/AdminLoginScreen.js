@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
@@ -21,6 +22,19 @@ const AdminLoginScreen = ({ navigation }) => {
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear form data when screen is focused (e.g., after logout)
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setFormData({
+        adminId: '',
+        password: '',
+      });
+      setErrors({});
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -121,13 +135,30 @@ const AdminLoginScreen = ({ navigation }) => {
       style={commonStyles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <TouchableOpacity
+        style={commonStyles.userIconButton}
+        onPress={() => navigation.navigate('Login')}
+      >
+        <Text style={commonStyles.userIconText}>👤</Text>
+      </TouchableOpacity>
+      
+      <View style={commonStyles.adminBadgeHeader}>
+        <View style={commonStyles.adminBadgeInner}>
+          <Text style={commonStyles.adminBadgeText}>ADMIN ACCESS</Text>
+        </View>
+      </View>
+      
       <ScrollView
-        contentContainerStyle={commonStyles.centeredContainer}
+        contentContainerStyle={commonStyles.topAlignedContainer}
         showsVerticalScrollIndicator={false}
       >
         <View style={commonStyles.formContainer}>
-          <View style={commonStyles.adminBadge}>
-            <Text style={commonStyles.adminBadgeText}>ADMIN ACCESS</Text>
+          <View style={commonStyles.logoContainer}>
+            <Image 
+              source={require('../../assets/logo.png')} 
+              style={commonStyles.logo}
+              resizeMode="contain"
+            />
           </View>
           
           <Text style={commonStyles.header}>Admin Login</Text>
@@ -186,14 +217,6 @@ const AdminLoginScreen = ({ navigation }) => {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[commonStyles.button, commonStyles.buttonSecondary]}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={[commonStyles.buttonText, commonStyles.buttonSecondaryText]}>
-              Back to User Login
-            </Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
